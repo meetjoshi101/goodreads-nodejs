@@ -1,0 +1,278 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Genrel Api",
+    "description": "Api that That are only accessed by Admin",
+    "version": "1.0.0"
+  },
+  "servers": [{
+    "url": "http://localhost:3000/"
+  }],
+  "security": [{
+    "bearerAuth": []
+  }],
+  "paths": {
+    "/user/{email}": {
+      "delete": {
+        "tags": [
+          "User"
+        ],
+        "summary": "Delete a user.",
+        "parameters": [{
+          "name": "email",
+          "in": "path",
+          "description": "user email",
+          "required": true,
+          "style": "simple",
+          "explode": false,
+          "schema": {
+            "type": "string"
+          }
+        }],
+        "responses": {
+          "200": {
+            "description": "User deleted"
+          }
+        }
+      }
+    },
+    "/user/users": {
+      "get": {
+        "tags": [
+          "User"
+        ],
+        "summary": "Get All users",
+        "description": "get all users",
+        "responses": {
+          "200": {
+            "description": "all users",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/user/add-admin/{email}": {
+      "patch": {
+        "tags": [
+          "User"
+        ],
+        "summary": "Give admin access to a user.",
+        "parameters": [{
+          "name": "email",
+          "in": "path",
+          "description": "user email",
+          "required": true,
+          "style": "simple",
+          "explode": false,
+          "schema": {
+            "type": "string"
+          }
+        }],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "role": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Admin added"
+          }
+        }
+      }
+    },
+    "/book/{isbn}": {
+      "delete": {
+        "tags": [
+          "Book"
+        ],
+        "summary": "Delete a Book.",
+        "parameters": [{
+          "name": "isbn",
+          "in": "path",
+          "description": "Book ISBN",
+          "required": true,
+          "style": "simple",
+          "explode": false,
+          "schema": {
+            "type": "string"
+          }
+        }],
+        "responses": {
+          "200": {
+            "description": "Book deleted"
+          }
+        }
+      }
+    },
+    "/book/add-book": {
+      "post": {
+        "tags": [
+          "Book"
+        ],
+        "summary": "Add Books.",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "ISBN": {
+                    "type": "integer"
+                  },
+                  "Title": {
+                    "type": "string"
+                  },
+                  "Author": {
+                    "type": "string"
+                  },
+                  "Description": {
+                    "type": "string"
+                  },
+                  "Publication-year": {
+                    "type": "string"
+                  },
+                  "image-url": {
+                    "type": "string"
+                  },
+                  "image-url-s": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Book Added"
+          }
+        }
+      }
+    },
+    "/book/edit-book": {
+      "patch": {
+        "tags": [
+          "Book"
+        ],
+        "summary": "Edit Books.",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "ISBN": {
+                    "type": "integer"
+                  },
+                  "Title": {
+                    "type": "string"
+                  },
+                  "Author": {
+                    "type": "string"
+                  },
+                  "Description": {
+                    "type": "string"
+                  },
+                  "Publication-year": {
+                    "type": "string"
+                  },
+                  "image-url": {
+                    "type": "string"
+                  },
+                  "image-url-s": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Book Updated"
+          }
+        }
+      }
+    },
+    "/genre/add-genre": {
+      "post": {
+        "tags": [
+          "Genre"
+        ],
+        "summary": "Add Genres.",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Genre Added"
+          }
+        }
+      }
+    },
+    "/genre/{name}": {
+      "delete": {
+        "tags": [
+          "Genre"
+        ],
+        "summary": "Delete a Genre.",
+        "parameters": [{
+          "name": "name",
+          "in": "path",
+          "description": "Name of genre",
+          "required": true,
+          "style": "simple",
+          "explode": false,
+          "schema": {
+            "type": "string"
+          }
+        }],
+        "responses": {
+          "200": {
+            "description": "Genre deleted"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    }
+  }
+}
