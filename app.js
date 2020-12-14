@@ -1,5 +1,6 @@
 require("dotenv").config();
 const express = require("express");
+const path = require("path");
 const app = express();
 const morgan = require("morgan");
 const bodyParser = require("body-parser");
@@ -58,6 +59,9 @@ app.use((req, res, next) => {
   next();
 });
 //Routes Which handles requests
+app.get("/", (req, res) => {
+  res.sendFile(path.join(__dirname + "/index.html"));
+});
 app.use("/user", userRoutes);
 app.use("/genre", genresRoute);
 app.use("/book", bookRouts);
