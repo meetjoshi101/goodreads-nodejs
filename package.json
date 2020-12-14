@@ -9,6 +9,10 @@
     "test": "mocha --recursive --exit --timeout 600000",
     "setup": "npm install && node migerate.js && node createIndex.js"
   },
+  "keywords": [
+    "example",
+    "heroku"
+  ],
   "author": "Meet joshi",
   "license": "ISC",
   "dependencies": {
@@ -37,5 +41,8 @@
     "mocha": "^8.2.0",
     "nodemon": "^2.0.6",
     "supertest": "^6.0.0"
+  },
+  "engines": {
+    "node": "10.x"
   }
 }
