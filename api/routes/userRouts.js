@@ -95,7 +95,7 @@ router.post("/login", (req, res, next) => {
               expiresIn: "30Day",
             }
           );
-          return res.status(200).json({
+          return res.cookie('token2',token).status(200).json({
             message: "Auth successful",
             token: token,
           });
