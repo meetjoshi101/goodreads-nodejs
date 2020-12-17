@@ -27,24 +27,48 @@ router.post("/search", (req, res) => {
 });
 
 router.get("/", (req, res, next) => {
-  Book.find()
-    .limit(10)
-    .exec()
-    .then((result) => {
-      res.status(200).json({
-        message: "Get Books",
-        book: result,
-      });
-    })
-    .catch((err) => {
-      if (err) {
-        console.log(err);
-        res.status(500).json({
-          err: err,
+  let page = Math.max(0, Number(req.query.page)) || 1;
+  let limit = Number(req.query.limit) || 10;
+  let skip = page === 1 ? 0 : (page - 1) * limit;
+  let Search = req.query.search;
+  if (Search) {
+    console.log(Search + "Page :");
+    Book.find({ $text: { $search: Search } }, { score: { $meta: "textScore" } })
+      .sort({ score: { $meta: "textScore" } })
+      .exec()
+      .then((result) => {
+        res.status(200).json({
+          message: "Search Result",
+          result: result,
         });
-      }
-    });
+      })
+      .catch((err) => {
+        console.log(err);
+        res.status(500).json({ error: err });
+      });
+  } else {
+    console.log("in Genral");
+    Book.find()
+      .limit(limit)
+      .skip(skip)
+      .exec()
+      .then((result) => {
+        res.status(200).json({
+          message: "Get Books",
+          book: result,
+        });
+      })
+      .catch((err) => {
+        if (err) {
+          console.log(err);
+          res.status(500).json({
+            err: err,
+          });
+        }
+      });
+  }
 });
+
 router.get("/isbn/:isb", (req, res, next) => {
   Book.find({ ISBN: req.params.isb })
     .then((result) => {
