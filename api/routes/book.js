@@ -9,22 +9,22 @@ const s = require("../../helper/getSequence");
 
 //!Get Requests
 
-router.post("/search", (req, res) => {
-  let search = req.body.s;
-  Book.find({ $text: { $search: search } }, { score: { $meta: "textScore" } })
-    .sort({ score: { $meta: "textScore" } })
-    .exec()
-    .then((result) => {
-      res.status(200).json({
-        message: "Search Result",
-        result: result,
-      });
-    })
-    .catch((err) => {
-      console.log(err);
-      res.status(500).json({ error: err });
-    });
-});
+// router.post("/search", (req, res) => {
+//   let search = req.body.s;
+//   Book.find({ $text: { $search: search } }, { score: { $meta: "textScore" } })
+//     .sort({ score: { $meta: "textScore" } })
+//     .exec()
+//     .then((result) => {
+//       res.status(200).json({
+//         message: "Search Result",
+//         result: result,
+//       });
+//     })
+//     .catch((err) => {
+//       console.log(err);
+//       res.status(500).json({ error: err });
+//     });
+// });
 
 router.get("/", (req, res, next) => {
   let page = Math.max(0, Number(req.query.page)) || 1;
@@ -101,8 +101,8 @@ router.get("/id/:id", (req, res, next) => {
     });
 });
 
-router.post("/author/", (req, res, next) => {
-  Book.find({ Author: req.body.name })
+router.get("/author", (req, res, next) => {
+  Book.find({ Author: req.query.name })
     .then((result) => {
       res.status(200).json({
         message: "get book by Author",
@@ -117,24 +117,8 @@ router.post("/author/", (req, res, next) => {
     });
 });
 
-router.post("/title", (req, res, next) => {
-  Book.find({ Title: req.body.title })
-    .then((result) => {
-      res.status(200).json({
-        message: "get book by Title",
-        book: result,
-      });
-    })
-    .catch((err) => {
-      res.status(500).json({
-        message: "err",
-        err: err,
-      });
-    });
-});
-
-router.post("/genre", (req, res, next) => {
-  Book.find({ Gener_id: req.body.Genre_id })
+router.get("/genre", (req, res, next) => {
+  Book.find({ Gener_id: Number(req.query.genre) })
     .then((result) => {
       res.status(200).json({
         message: "get book by Genre",
@@ -148,6 +132,23 @@ router.post("/genre", (req, res, next) => {
       });
     });
 });
+
+
+// router.post("/title", (req, res, next) => {
+//   Book.find({ Title: req.body.title })
+//     .then((result) => {
+//       res.status(200).json({
+//         message: "get book by Title",
+//         book: result,
+//       });
+//     })
+//     .catch((err) => {
+//       res.status(500).json({
+//         message: "err",
+//         err: err,
+//       });
+//     });
+// });
 
 //!Post Requests
 router.post("/add-book", auth, (req, res, next) => {
