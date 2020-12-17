@@ -32,7 +32,7 @@ router.get("/", (req, res, next) => {
   let skip = page === 1 ? 0 : (page - 1) * limit;
   let Search = req.query.search;
   if (Search) {
-    console.log(Search + "Page :");
+    console.log(Search);
     Book.find({ $text: { $search: Search } }, { score: { $meta: "textScore" } })
       .sort({ score: { $meta: "textScore" } })
       .exec()
