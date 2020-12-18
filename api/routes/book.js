@@ -31,8 +31,8 @@ router.get("/", (req, res, next) => {
   let limit = Number(req.query.limit) || 10;
   let skip = page === 1 ? 0 : (page - 1) * limit;
   let Search = req.query.search;
+  console.log("page: " + page + " limit: " + limit + " skip: " + skip);
   if (Search) {
-    console.log(Search);
     Book.find({ $text: { $search: Search } }, { score: { $meta: "textScore" } })
       .sort({ score: { $meta: "textScore" } })
       .exec()
@@ -49,8 +49,8 @@ router.get("/", (req, res, next) => {
   } else {
     console.log("in Genral");
     Book.find()
-      .limit(limit)
       .skip(skip)
+      .limit(limit)
       .exec()
       .then((result) => {
         res.status(200).json({
@@ -132,7 +132,6 @@ router.get("/genre", (req, res, next) => {
       });
     });
 });
-
 
 // router.post("/title", (req, res, next) => {
 //   Book.find({ Title: req.body.title })
