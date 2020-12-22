@@ -118,7 +118,13 @@ router.get("/author", (req, res, next) => {
 });
 
 router.get("/genre", (req, res, next) => {
+  let page = Math.max(0, Number(req.query.page)) || 1;
+  let limit = Number(req.query.limit) || 10;
+  let skip = page === 1 ? 0 : (page - 1) * limit;
+
   Book.find({ Gener_id: Number(req.query.genre) })
+    .skip(skip)
+    .limit(limit)
     .then((result) => {
       res.status(200).json({
         message: "get book by Genre",
