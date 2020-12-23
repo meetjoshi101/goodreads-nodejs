@@ -16,6 +16,13 @@ router.get("/", (req, res) => {
     });
 });
 
+router.get("/:id", (req, res) => {
+  Genre.find({id: req.params.id})
+    .exec()
+    .then((doc) => {
+      res.status(200).json({ genre: doc });
+    });
+});
 //!Post Request
 
 router.post("/add-genre", auth, (req, res) => {
