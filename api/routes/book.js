@@ -69,6 +69,15 @@ router.get("/", (req, res, next) => {
   }
 });
 
+router.get("/get-book-count", (req,res)=> {
+  Book.countDocuments().then((count) => {
+    res.status(200).json({
+      message: "Get count",
+      count: count
+    });
+  }).catch(e => console.log(e))
+});
+
 router.get("/isbn/:isb", (req, res, next) => {
   Book.find({ ISBN: req.params.isb })
     .then((result) => {

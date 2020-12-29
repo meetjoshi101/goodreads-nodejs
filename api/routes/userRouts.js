@@ -127,6 +127,17 @@ router.get("/users", auth, (req, res, next) => {
     });
 });
 
+router.get("/get-user-count", (req, res) => {
+  User.countDocuments()
+    .then((count) => {
+      res.status(200).json({
+        message: "Get count",
+        count: count,
+      });
+    })
+    .catch((e) => console.log(e));
+});
+
 //!Delete Request
 
 router.delete("/:email", auth, (req, res, next) => {

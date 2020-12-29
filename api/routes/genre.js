@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 const express = require("express");
 require("dotenv").config();
 const router = express.Router();
@@ -5,6 +6,7 @@ const mongoose = require("mongoose");
 const auth = require("../middleware/auth");
 const Genre = require("../model/genre");
 const s = require("../../helper/getSequence");
+const { route } = require("./read");
 
 //!Get Request
 
@@ -16,12 +18,23 @@ router.get("/", (req, res) => {
     });
 });
 
-router.get("/:id", (req, res) => {
-  Genre.find({id: req.params.id})
+router.get("/id/:id", (req, res) => {
+  Genre.find({ id: req.params.id })
     .exec()
     .then((doc) => {
       res.status(200).json({ genre: doc });
     });
+});
+
+router.get("/get-genre-count", (req, res) => {
+  Genre.countDocuments()
+    .then((count) => {
+      res.status(200).json({
+        message: "Get count",
+        count: count,
+      });
+    })
+    .catch((e) => console.log(e));
 });
 //!Post Request
 
