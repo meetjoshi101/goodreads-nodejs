@@ -35,6 +35,8 @@ router.get("/", (req, res, next) => {
   if (Search) {
     Book.find({ $text: { $search: Search } }, { score: { $meta: "textScore" } })
       .sort({ score: { $meta: "textScore" } })
+      .skip(skip)
+      .limit(skip, limit)
       .exec()
       .then((result) => {
         res.status(200).json({
@@ -50,7 +52,7 @@ router.get("/", (req, res, next) => {
     console.log("in Genral");
     Book.find()
       .skip(skip)
-      .limit(limit)
+      .limit(skip, limit)
       .exec()
       .then((result) => {
         res.status(200).json({
