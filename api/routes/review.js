@@ -10,12 +10,65 @@ const Read = require("../model/read");
 //! Get
 
 router.get("/", userAuth, (req, res) => {
-  Review.find().then((result) => {
-    res.status(200).json({
-      message: "Get Reviews",
-      reviews: result,
+  Review.aggregate([
+    {
+      $lookup: {
+        from: "reads",
+        localField: "read_id",
+        foreignField: "id",
+        as: "read",
+      },
+    },
+    {
+      $unwind: {
+        path: "$read",
+      },
+    },
+    {
+      $lookup: {
+        from: "books",
+        localField: "read.book_id",
+        foreignField: "id",
+        as: "book",
+      },
+    },
+    {
+      $unwind: {
+        path: "$book",
+      },
+    },
+    {
+      $lookup: {
+        from: "users",
+        localField: "read.user_id",
+        foreignField: "id",
+        as: "user",
+      },
+    },
+    {
+      $unwind: {
+        path: "$user",
+      },
+    },
+    {
+      $project: {
+        _id: 1,
+        id: 1,
+        rating: 1,
+        comment: 1,
+        date: 1,
+        title: "$book.Title",
+        name: "$user.name",
+      },
+    },
+  ])
+    .exec()
+    .then((result) => {
+      res.status(200).json({
+        message: "Get Reviews",
+        reviews: result,
+      });
     });
-  });
 });
 
 router.get("/new", userAuth, (req, res) => {
@@ -35,16 +88,67 @@ router.get("/new", userAuth, (req, res) => {
 });
 
 router.get("/user-book", userAuth, (req, res) => {
-  Review.aggregate()
-    .lookup({
-      from: "reads",
-      localField: "read_id",
-      foreignField: "id",
-      as: "read",
-    })
-    .match({ "read.user_id": req.userData.id })
+  Review.aggregate([
+    {
+      $lookup: {
+        from: "reads",
+        localField: "read_id",
+        foreignField: "id",
+        as: "read",
+      },
+    },
+    {
+      $unwind: {
+        path: "$read",
+      },
+    },
+    {
+      $lookup: {
+        from: "books",
+        localField: "read.book_id",
+        foreignField: "id",
+        as: "book",
+      },
+    },
+    {
+      $unwind: {
+        path: "$book",
+      },
+    },
+    {
+      $lookup: {
+        from: "users",
+        localField: "read.user_id",
+        foreignField: "id",
+        as: "user",
+      },
+    },
+    {
+      $unwind: {
+        path: "$user",
+      },
+    },
+    {
+      $match: {
+        $and: [{ "read.user_id": req.userData.id }],
+      },
+    },
+    {
+      $project: {
+        _id: 1,
+        id: 1,
+        rating: 1,
+        comment: 1,
+        date: 1,
+        book: "$book.Title",
+        user: "$user.name",
+      },
+    },
+  ])
+    //.match({ "read.user_id": req.userData.id })
     .exec()
     .then((result) => {
+      console.log(result);
       res.status(200).json({
         message: "Get Reviews",
         reviews: result.reverse(),
@@ -53,18 +157,67 @@ router.get("/user-book", userAuth, (req, res) => {
 });
 
 router.post("/book-review", (req, res) => {
-  let q = {
-    "read.book_id": req.body.bId,
-  };
-
-  Review.aggregate()
-    .lookup({
-      from: "reads",
-      localField: "read_id",
-      foreignField: "id",
-      as: "read",
-    })
-    .match(q)
+  Review.aggregate([
+    {
+      $lookup: {
+        from: "reads",
+        localField: "read_id",
+        foreignField: "id",
+        as: "read",
+      },
+    },
+    {
+      $unwind: {
+        path: "$read",
+      },
+    },
+    {
+      $lookup: {
+        from: "books",
+        localField: "read.book_id",
+        foreignField: "id",
+        as: "book",
+      },
+    },
+    {
+      $unwind: {
+        path: "$book",
+      },
+    },
+    {
+      $lookup: {
+        from: "users",
+        localField: "read.user_id",
+        foreignField: "id",
+        as: "user",
+      },
+    },
+    {
+      $unwind: {
+        path: "$user",
+      },
+    },
+    {
+      $match: {
+        $and: [
+          {
+            "read.book_id": req.body.bId,
+          },
+        ],
+      },
+    },
+    {
+      $project: {
+        _id: 1,
+        id: 1,
+        rating: 1,
+        comment: 1,
+        date: 1,
+        book: "$book.Title",
+        user: "$user.name",
+      },
+    },
+  ])
     .exec()
     .then((result) => {
       res.status(200).json({

@@ -9,7 +9,36 @@ const Read = require("../model/read");
 //!get
 
 router.get("/", userAuth, (req, res) => {
-  Read.find({ user_id: req.userData.id })
+  Read.aggregate([
+    {
+      $lookup: {
+        from: "books",
+        localField: "book_id",
+        foreignField: "id",
+        as: "book",
+      },
+    },
+    {
+      $unwind: {
+        path: "$book",
+      },
+    },
+    {
+      $match: {
+        $and: [{ user_id: req.userData.id }],
+      },
+    },
+    {
+      $project: {
+        "_id": 1,
+        "id": 1,
+        "user_id": 1,
+        "book_id": 1,
+        "status": 1,
+        "Title": "$book.Title"
+      }
+    }
+  ]).exec()
     .then((result) => {
       res.status(200).json({
         message: "Reads",
