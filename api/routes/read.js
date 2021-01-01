@@ -35,7 +35,8 @@ router.get("/", userAuth, (req, res) => {
         "user_id": 1,
         "book_id": 1,
         "status": 1,
-        "Title": "$book.Title"
+        "Title": "$book.Title",
+        "image": "$book.Image_URL_S"
       }
     }
   ]).exec()
