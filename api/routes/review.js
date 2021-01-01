@@ -137,6 +137,7 @@ router.get("/user-book", userAuth, (req, res) => {
       $project: {
         _id: 1,
         id: 1,
+        read_id: 1,
         rating: 1,
         comment: 1,
         date: 1,
