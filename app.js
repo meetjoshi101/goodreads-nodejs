@@ -6,7 +6,6 @@ const morgan = require("morgan");
 const bodyParser = require("body-parser");
 const swaggerUi = require("swagger-ui-express");
 const swaggerDocument = require("./swagger.json");
-const cors = require("cors");
 const serveIndex = require('serve-index');
 const multer = require("multer");
 const logger = require("pino-http")({
@@ -62,7 +61,7 @@ if (process.env.NODE_ENV !== "test") {
 app.use(morgan("dev"));
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
-app.use(cors());
+// app.use(cors());
 app.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 app.use((req, res, next) => {
