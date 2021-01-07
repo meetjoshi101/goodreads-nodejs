@@ -7,7 +7,7 @@ const bodyParser = require("body-parser");
 const swaggerUi = require("swagger-ui-express");
 const swaggerDocument = require("./swagger.json");
 const cors = require("cors");
-// const serveIndex = require('serve-index');
+const serveIndex = require('serve-index');
 const multer = require("multer");
 const logger = require("pino-http")({
 
@@ -78,7 +78,7 @@ app.use((req, res, next) => {
   next();
 });
 
-// app.use('/ftp', express.static('public'), serveIndex('public', {'icons': true}));
+app.use('/ftp', express.static('public'), serveIndex('public', {'icons': true}));
 //Routes Which handles requests
 app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname + "/index.html"));
