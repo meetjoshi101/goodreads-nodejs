@@ -8,6 +8,7 @@ const swaggerUi = require("swagger-ui-express");
 const swaggerDocument = require("./swagger.json");
 const serveIndex = require('serve-index');
 const multer = require("multer");
+const cors = require('cors');
 const logger = require("pino-http")({
 
   customAttributeKeys: {
@@ -61,7 +62,7 @@ if (process.env.NODE_ENV !== "test") {
 app.use(morgan("dev"));
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
-// app.use(cors());
+app.use(cors());
 app.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 app.use((req, res, next) => {
