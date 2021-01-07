@@ -7,7 +7,8 @@ const bodyParser = require("body-parser");
 const swaggerUi = require("swagger-ui-express");
 const swaggerDocument = require("./swagger.json");
 const cors = require("cors");
-const serveIndex = require('serve-index');
+// const serveIndex = require('serve-index');
+const multer = require("multer");
 const logger = require("pino-http")({
 
   customAttributeKeys: {
@@ -37,6 +38,23 @@ const bookRouts = require("./api/routes/book");
 const readRouts = require("./api/routes/read");
 const reviewRouts = require("./api/routes/review");
 
+
+var storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+      cb(null, './public/uploads')
+  },
+  filename: (req, file, cb) => {
+      cb(null, file.fieldname + '-' + Date.now() + path.extname(file.originalname))
+  }
+});
+
+const upload = multer({ storage: storage });
+
+app.post('/upload', upload.single('file'), function(req,res) {
+  console.log('storage location is ', req.hostname +'/' + req.file.path);
+  return res.send(req.file);
+})
+
 //server
 if (process.env.NODE_ENV !== "test") {
   app.use(logger);
@@ -47,20 +65,20 @@ app.use(bodyParser.json());
 app.use(cors());
 app.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
-// app.use((req, res, next) => {
-//   res.header("Access-Control-Allow-Origin", "*");
-//   res.header(
-//     "Access-Control-Allow-Headers",
-//     "Origin, X-Requested-With, Content-Type, Accept, Authorization"
-//   );
-//   if (req.method === "OPTIONS") {
-//     res.header("Access-Control-Allow-Methods", "PUT, POST, PATCH, DELETE, GET");
-//     return res.status(200).json({});
-//   }
-//   next();
-// });
+app.use((req, res, next) => {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header(
+    "Access-Control-Allow-Headers",
+    "Origin, X-Requested-With, Content-Type, Accept, Authorization"
+  );
+  if (req.method === "OPTIONS") {
+    res.header("Access-Control-Allow-Methods", "PUT, POST, PATCH, DELETE, GET");
+    return res.status(200).json({});
+  }
+  next();
+});
 
-app.use('/ftp', express.static('public'), serveIndex('public', {'icons': true}));
+// app.use('/ftp', express.static('public'), serveIndex('public', {'icons': true}));
 //Routes Which handles requests
 app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname + "/index.html"));
