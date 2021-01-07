@@ -47,8 +47,6 @@ app.use(bodyParser.json());
 app.use(cors());
 app.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
-app.use('/ftp', express.static('public'), serveIndex('public', {'icons': true}));
-
 app.use((req, res, next) => {
   res.header("Access-Control-Allow-Origin", "*");
   res.header(
@@ -61,6 +59,8 @@ app.use((req, res, next) => {
   }
   next();
 });
+
+app.use('/ftp', express.static('public'), serveIndex('public', {'icons': true}));
 //Routes Which handles requests
 app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname + "/index.html"));
