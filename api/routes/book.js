@@ -1,11 +1,25 @@
 /* eslint-disable no-unused-vars */
 const express = require("express");
 require("dotenv").config();
+const debug = require('debug')('myapp:server');
 const router = express.Router();
 const mongoose = require("mongoose");
 const auth = require("../middleware/auth");
 const Book = require("../model/book");
 const s = require("../../helper/getSequence");
+const multer = require("multer");
+const path = require('path');
+
+var storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+      cb(null, './public/uploads')
+  },
+  filename: (req, file, cb) => {
+      cb(null, file.fieldname + '-' + Date.now() + path.extname(file.originalname))
+  }
+});
+
+const upload = multer({ storage: storage });
 
 //!Get Requests
 
@@ -167,6 +181,13 @@ router.get("/genre", (req, res, next) => {
 // });
 
 //!Post Requests
+
+router.post('/upload', upload.single('file'), function(req,res) {
+  debug(req.file);
+  console.log('storage location is ', req.hostname +'/' + req.file.path);
+  return res.send(req.file);
+})
+
 router.post("/add-book", auth, (req, res, next) => {
   Book.find({ ISBN: req.body.ISBN })
     .exec()

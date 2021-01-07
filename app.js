@@ -7,6 +7,7 @@ const bodyParser = require("body-parser");
 const swaggerUi = require("swagger-ui-express");
 const swaggerDocument = require("./swagger.json");
 const cors = require("cors");
+const serveIndex = require('serve-index');
 const logger = require("pino-http")({
 
   customAttributeKeys: {
@@ -45,6 +46,8 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(cors());
 app.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+
+app.use('/ftp', express.static('public'), serveIndex('public', {'icons': true}));
 
 app.use((req, res, next) => {
   res.header("Access-Control-Allow-Origin", "*");
