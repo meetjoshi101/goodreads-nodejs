@@ -77,8 +77,8 @@ app.use((req, res, next) => {
 app.use('/ftp', express.static('public'), serveIndex('public', {'icons': true}));
 // eslint-disable-next-line no-unused-vars
 app.post('/upload', upload.single('file'), (req, res) => {
-  console.log(req.file);
-  res.status(200).json({message: 'Upload successful'})
+  console.log();
+  res.status(200).json({url: req.get('host') + '/ftp/uploads/' + req.file.filename})
 })
 //Routes Which handles requests
 app.get("/", (req, res) => {
