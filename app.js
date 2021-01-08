@@ -50,10 +50,6 @@ var storage = multer.diskStorage({
 
 const upload = multer({ storage: storage });
 
-app.post('/upload', upload.single('file'), function(req,res) {
-  console.log('storage location is ', req.hostname +'/' + req.file.path);
-  return res.send(req.file);
-})
 
 //server
 if (process.env.NODE_ENV !== "test") {
@@ -66,16 +62,24 @@ app.use(cors());
 app.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 app.use((req, res, next) => {
-  res.header("Access-Control-Allow-Origin", "http://localhost:3000/");
-  res.header("Access-Control-Allow-Credentials","true");
+  res.header("Access-Control-Allow-Origin", "*");
   res.header(
+    "Access-Control-Allow-Headers",
     "Origin, X-Requested-With, Content-Type, Accept, Authorization"
   );
-  res.header("Access-Control-Allow-Methods", "PUT, POST, PATCH, DELETE, GET, OPTIONS");
+  if (req.method === "OPTIONS") {
+    res.header("Access-Control-Allow-Methods", "PUT, POST, PATCH, DELETE, GET, OPTIONS");
+    return res.status(200).json({});
+  }
   next();
 });
 
 app.use('/ftp', express.static('public'), serveIndex('public', {'icons': true}));
+// eslint-disable-next-line no-unused-vars
+app.post('/upload', upload.single('file'), (req, res) => {
+  console.log(req.file);
+  res.status(200).json({message: 'Upload successful'})
+})
 //Routes Which handles requests
 app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname + "/index.html"));
