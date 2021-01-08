@@ -76,7 +76,7 @@ app.use((req, res, next) => {
 
 app.use('/ftp', express.static('public'), serveIndex('public', {'icons': true}));
 app.post('/upload', upload.single('file'), (req, res) => {
-  res.status(200).json({url: req.get('host') + '/ftp/uploads/' + req.file.filename})
+  res.status(200).json({url: 'https://goodreadsnode.herokuapp.com/ftp/uploads/' + req.file.filename})
 })
 //Routes Which handles requests
 app.get("/", (req, res) => {
