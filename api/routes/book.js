@@ -33,6 +33,7 @@ router.get("/", (req, res, next) => {
   let limit = Number(req.query.limit) || 10;
   let skip = page === 1 ? 0 : (page - 1) * limit;
   let Search = req.query.search;
+  console.log(Search);
   console.log("page: " + page + " limit: " + limit + " skip: " + skip);
   if (Search) {
     Book.find({ $text: { $search: Search } }, { score: { $meta: "textScore" } })
@@ -43,7 +44,7 @@ router.get("/", (req, res, next) => {
       .then((result) => {
         res.status(200).json({
           message: "Search Result",
-          result: result,
+          book: result,
         });
       })
       .catch((err) => {
